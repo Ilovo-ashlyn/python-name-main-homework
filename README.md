@@ -90,3 +90,15 @@ python run_all_demos.py     # 一键跑完下面所有实验
 ## 6. 结论
 
 `if __name__ == '__main__':` 不是语法规定，而是一种**模块边界约定**：把「被别人导入时该提供的能力」和「自己作为程序运行时该做的事」分开。它让代码可复用、无意外副作用、入口清晰，因此几乎出现在所有正经的 Python 脚本里。
+
+## 7. 本仓库的作业索引
+
+这个仓库统一收纳 Python 作业：根目录是第 1 份，后续作业各占一个子目录，均为纯标准库、零第三方依赖。
+
+| 位置 | 作业 | 运行方式 |
+| --- | --- | --- |
+| 根目录（本文件） | `if __name__ == '__main__':` 的含义与原因 | `python run_all_demos.py` |
+| [`montecarlo-shapes/`](montecarlo-shapes/README.md) | 蒙特卡罗方法手搓图形（手写 PNG 编码器、5 个实验） | `python draw_all.py` / `python selftest.py` |
+| [`character-grid/`](character-grid/README.md) | 教材 5.1 字符田字格绘制（函数化、任意尺寸） | `python demo.py` / `python selftest.py` |
+
+> 进入对应目录后运行命令即可；子目录 README 中的图片使用相对路径，在 GitHub 页面上会直接显示。
