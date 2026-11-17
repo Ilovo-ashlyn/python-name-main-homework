@@ -178,3 +178,14 @@ class Viewport:
         py = self.top + round((self.ymax - y) / (self.ymax - self.ymin)
                               * (self.height - 1))
         return px, py
+
+
+if __name__ == "__main__":
+    # 这是「工具模块」：被 draw_all.py 导入使用，自己不负责生成作业图片。
+    # 单独运行到这里时给一句明确提示，免得控制台一片空白让人以为出错。
+    demo = Canvas(4, 4)
+    demo.dot(1, 1, HIT, 2)
+    print("mc_canvas.py 是工具模块（画布 + 手写 PNG 编码器），不会自己画图。")
+    print(f"演示：4x4 画布画了一个 2x2 蓝点，像素缓冲区 {len(demo.pixels)} 字节。")
+    print("可用的类：Canvas / Viewport；配色常量：HIT / MISS / ACCENT / GREEN ...")
+    print("要生成 5 张作业图，请运行：python draw_all.py")

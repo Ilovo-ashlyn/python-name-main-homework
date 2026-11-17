@@ -148,3 +148,14 @@ def sierpinski(rng: random.Random, n: int,
         x, y = (x + vx) / 2, (y + vy) / 2
         if i >= skip:
             yield x, y
+
+
+if __name__ == "__main__":
+    # 这是「工具模块」：被 draw_all.py / selftest.py 导入使用。
+    # 单独运行时做一个最小演示，顺便说明该运行哪个文件。
+    demo = estimate_pi(random.Random(20261116), 20000)
+    print("montecarlo.py 是工具模块（随机采样与估算算法），不会自己输出作业结果。")
+    print(f"演示：{demo.row()}")
+    print("可用函数：estimate_pi / area_experiment / integral_experiment / "
+          "grid_reference / convergence_pi / sierpinski")
+    print("完整 5 个实验请运行：python draw_all.py；校验请运行：python selftest.py")
