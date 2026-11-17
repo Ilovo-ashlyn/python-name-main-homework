@@ -3,6 +3,12 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
-.idea/
 .vscode/
 .DS_Store
+
+# PyCharm：只提交可共享的项目配置（模块定义、运行配置），忽略个人/机器相关文件
+.idea/*
+!.idea/.gitignore
+!.idea/modules.xml
+!.idea/runConfigurations/
+!.idea/runConfigurations/*.xml

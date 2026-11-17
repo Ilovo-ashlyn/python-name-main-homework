@@ -29,3 +29,20 @@ python-name-main-homework/
 - 随机实验固定种子，结果可复现。
 - 每份作业自带讲解型 `README.md`、`output/` 示例和自检脚本。
 - 子目录 README 中的图片使用相对路径，在 GitHub 页面上会直接显示。
+
+## 在 PyCharm 中打开
+
+项目自带 PyCharm 配置（`.idea/` 与根目录的 `.iml`）。clone 后用 **File → Open** 选仓库根目录即可，三份作业分别对应 `name-main/`、`montecarlo-shapes/`、`character-grid/` 三个文件夹。
+
+1. **解释器**：作业只用标准库，Python 3.8+ 即可，不需要 `pip install`。项目根若有 `.venv`，PyCharm 会自动识别；否则到 **Settings → Project → Python Interpreter → Add Local Interpreter → Existing** 选本机 Python。
+2. **运行**：右上角运行配置下拉里已备好 5 个配置，选一个点 ▶ 即可，不用敲命令。
+
+| 运行配置 | 作用 |
+| --- | --- |
+| `01 name-main \| 五个实验` | 一次跑完 `__name__` 的全部对照实验 |
+| `02 montecarlo \| 生成图形` | 生成 5 张 PNG 到 `montecarlo-shapes/output/` |
+| `02 montecarlo \| 自检` | 校验 PNG 结构与统计结果 |
+| `03 character-grid \| n=4 示例` | 画 4×4 田字格并生成示例文本 |
+| `03 character-grid \| 自检` | 校验行数、列数、边框位置 |
+
+> `.idea/` 只提交了可共享的模块定义和运行配置；`workspace.xml`、`misc.xml`、`.venv/` 等个人/机器相关文件由 `.gitignore` 排除，换台电脑不会带过来。

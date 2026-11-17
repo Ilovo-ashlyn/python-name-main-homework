@@ -1,0 +1,11 @@
+# Default ignored files (JetBrains)
+/shelf/
+/workspace.xml
+# 本机相关，不提交
+/misc.xml
+/editor.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
