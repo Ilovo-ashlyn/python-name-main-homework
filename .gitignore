@@ -6,9 +6,6 @@ venv/
 .vscode/
 .DS_Store
 
-# PyCharm：只提交可共享的项目配置（模块定义、运行配置），忽略个人/机器相关文件
-.idea/*
-!.idea/.gitignore
-!.idea/modules.xml
-!.idea/runConfigurations/
-!.idea/runConfigurations/*.xml
+# 本机开发工具配置：可共享副本统一放在 pycharm-setup/，根目录的本机文件不上传
+/.idea/
+/python-name-main-homework.iml

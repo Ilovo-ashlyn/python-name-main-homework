@@ -1,8 +1,8 @@
 """把本机 PyCharm 项目里的三份作业同步到本仓库对应子目录。
 
 用法（在仓库根目录执行）：
-    python sync_from_pycharm.py                    # 默认源目录 D:/pycharm
-    python sync_from_pycharm.py --source D:/pycharm
+    python pycharm-setup/sync_from_pycharm.py                    # 默认源目录 D:/pycharm
+    python pycharm-setup/sync_from_pycharm.py --source D:/pycharm
 
 同步方向：PyCharm 项目 -> 本仓库，只覆盖三个作业目录内的文件，
 不会删除仓库里其它内容。同步完成后按提示 commit / push 即可上传 GitHub。
@@ -15,7 +15,8 @@ import filecmp
 import shutil
 from pathlib import Path
 
-REPO = Path(__file__).resolve().parent
+# 本脚本位于 pycharm-setup/ 下，仓库根目录是它的上一级目录
+REPO = Path(__file__).resolve().parent.parent
 HOMEWORKS = ("name-main", "montecarlo-shapes", "character-grid")
 SKIP = {"__pycache__", ".git", ".idea", "venv", ".venv", ".pytest_cache"}
 
