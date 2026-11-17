@@ -46,3 +46,15 @@ python-name-main-homework/
 | `03 character-grid \| 自检` | 校验行数、列数、边框位置 |
 
 > `.idea/` 只提交了可共享的模块定义和运行配置；`workspace.xml`、`misc.xml`、`.venv/` 等个人/机器相关文件由 `.gitignore` 排除，换台电脑不会带过来。
+
+## 从本机 PyCharm 项目同步到 GitHub
+
+本机用 PyCharm 打开的是 `D:\pycharm`，三份作业分别放在同名的三个子目录里。在那里改完代码后，先同步到本仓库，再推送：
+
+```bash
+cd D:\workbuddywork\python-name-main-homework
+python sync_from_pycharm.py
+git add . && git commit -m "sync homework from PyCharm" && git push
+```
+
+`sync_from_pycharm.py` 只覆盖三个作业目录内的文件，不会删除仓库里其它内容；源目录可用 `--source` 指定。GitHub 上的对应位置始终是 `name-main/`、`montecarlo-shapes/`、`character-grid/` 三个文件夹。
