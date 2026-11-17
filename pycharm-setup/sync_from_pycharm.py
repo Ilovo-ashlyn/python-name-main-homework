@@ -1,10 +1,10 @@
-"""把本机 PyCharm 项目里的三份作业同步到本仓库对应子目录。
+"""把本机 PyCharm 项目里的四份作业同步到本仓库对应子目录。
 
 用法（在仓库根目录执行）：
     python pycharm-setup/sync_from_pycharm.py                    # 默认源目录 D:/pycharm
     python pycharm-setup/sync_from_pycharm.py --source D:/pycharm
 
-同步方向：PyCharm 项目 -> 本仓库，只覆盖三个作业目录内的文件，
+同步方向：PyCharm 项目 -> 本仓库，只覆盖四个作业目录内的文件，
 不会删除仓库里其它内容。同步完成后按提示 commit / push 即可上传 GitHub。
 """
 
@@ -17,7 +17,7 @@ from pathlib import Path
 
 # 本脚本位于 pycharm-setup/ 下，仓库根目录是它的上一级目录
 REPO = Path(__file__).resolve().parent.parent
-HOMEWORKS = ("name-main", "montecarlo-shapes", "character-grid")
+HOMEWORKS = ("name-main", "montecarlo-shapes", "character-grid", "koch-snowflake")
 SKIP = {"__pycache__", ".git", ".idea", "venv", ".venv", ".pytest_cache"}
 
 
@@ -52,7 +52,7 @@ def sync(source: Path) -> int:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="把 PyCharm 项目中的三份作业同步到本仓库对应子目录"
+        description="把 PyCharm 项目中的四份作业同步到本仓库对应子目录"
     )
     parser.add_argument(
         "--source",
@@ -66,7 +66,7 @@ def main() -> None:
         print(f"\n同步完成，共更新 {changed} 个文件。接下来在仓库根目录执行：")
         print('  git add . && git commit -m "sync homework from PyCharm" && git push')
     else:
-        print("\n三个作业目录已与仓库完全一致，没有文件需要更新。")
+        print("\n四个作业目录已与仓库完全一致，没有文件需要更新。")
 
 
 if __name__ == "__main__":

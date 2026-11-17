@@ -5,6 +5,7 @@
       <sourceFolder url="file://$MODULE_DIR$/name-main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/montecarlo-shapes" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/character-grid" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/koch-snowflake" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
     <orderEntry type="inheritedJdk" />
