@@ -1,13 +1,20 @@
-"""一键生成全部图形与统计表。
+"""一键生成全部图形与统计表（本作业的运行入口）。
 
-运行：python draw_all.py
+运行：python draw_all.py            # 生成 5 张 PNG + 图片画廊，打印统计表
+      python draw_all.py --show     # 生成后用浏览器自动打开画廊看图
 输出：output/*.png —— 全部由本项目自己编码，可直接打开或交作业。
+      output/index.html —— 把 5 张图内嵌在一起的画廊，双击即可看图。
+
+注意：控制台是纯文本终端，不会显示图片本身；图片是 output/ 目录下的文件。
 """
 
 from __future__ import annotations
 
+import argparse
+import base64
 import math
 import random
+import webbrowser
 from pathlib import Path
 
 from mc_canvas import (ACCENT, GREEN, GRID, HIT, INK, MISS, THEORY,
@@ -189,7 +196,77 @@ def draw_convergence(seed: int) -> Path:
     return c.save(OUT / "05_convergence.png")
 
 
-def main() -> None:
+CAPTIONS = {
+    "01_pi_darts.png": "实验 1 · 投点估算 π（蓝色点落在单位圆内）",
+    "02_heart.png": "实验 2 · 随机点填出心形（红色点为命中）",
+    "03_sierpinski.png": "实验 3 · 混沌游戏画出 Sierpinski 三角形",
+    "04_integral.png": "实验 4 · 投点算定积分 ∫₀¹√(1-x²)dx",
+    "05_convergence.png": "实验 5 · 误差随样本量 N 收敛，对照 1/√N",
+}
+
+
+def write_gallery(files: list[Path]) -> Path:
+    """把 5 张 PNG 内嵌成一个 HTML 画廊，双击该文件即可看图。
+
+    只用标准库 base64：图片以 data URI 内嵌，因此这个文件可以单独发给
+    别人，不依赖同目录下的 PNG，也不依赖任何网络或第三方库。
+    """
+    cards = []
+    for path in files:
+        encoded = base64.b64encode(path.read_bytes()).decode("ascii")
+        caption = CAPTIONS.get(path.name, path.name)
+        cards.append(
+            "<figure>\n"
+            '  <img src="data:image/png;base64,' + encoded + '" alt="'
+            + path.name + '">\n'
+            "  <figcaption><b>" + caption + "</b><br>\n"
+            "    <code>output/" + path.name + "</code> · "
+            + f"{path.stat().st_size / 1024:.1f}" + " KB\n"
+            "  </figcaption>\n"
+            "</figure>"
+        )
+    html = (
+        "<!DOCTYPE html>\n"
+        '<html lang="zh-CN">\n<head>\n'
+        '<meta charset="utf-8">\n'
+        "<title>蒙特卡罗方法手搓图形 · 作业成果</title>\n"
+        "<style>\n"
+        'body { margin: 0; padding: 32px; background: #f6f7f9; color: #24292f;\n'
+        '       font-family: "Microsoft YaHei", system-ui, sans-serif; }\n'
+        "h1 { font-size: 24px; margin: 0 0 6px; }\n"
+        "p.note { color: #57606a; margin: 0 0 24px; line-height: 1.7; }\n"
+        ".grid { display: grid; gap: 20px;\n"
+        "        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }\n"
+        "figure { margin: 0; padding: 14px; background: #fff;\n"
+        "         border: 1px solid #d0d7de; border-radius: 8px; }\n"
+        "figure img { width: 100%; height: auto; display: block;\n"
+        "             image-rendering: pixelated; }\n"
+        "figcaption { margin-top: 10px; font-size: 14px; line-height: 1.6; }\n"
+        "code { color: #0969da; }\n"
+        "</style>\n</head>\n<body>\n"
+        "<h1>蒙特卡罗方法手搓图形 · 作业成果</h1>\n"
+        '<p class="note">5 张 520×520 PNG 全部由本项目用标准库逐字节编码生成，'
+        "未使用 numpy / matplotlib / Pillow。<br>"
+        "随机种子固定为 20261116，每次运行结果完全一致。"
+        "图片已内嵌在本页面里，此文件可单独发送。</p>\n"
+        '<div class="grid">\n' + "\n".join(cards) + "\n</div>\n"
+        "</body>\n</html>\n"
+    )
+    target = OUT / "index.html"
+    target.write_text(html, encoding="utf-8")
+    return target
+
+
+def main(argv: list[str] | None = None) -> None:
+    parser = argparse.ArgumentParser(
+        description="生成蒙特卡罗手搓图形（5 张 PNG + 可双击查看的图片画廊）"
+    )
+    parser.add_argument(
+        "--show", action="store_true",
+        help="生成后用浏览器自动打开 output/index.html 看图",
+    )
+    args = parser.parse_args(argv)
+
     rng = random.Random(SEED)
     estimates: list[Estimate] = []
     files: list[Path] = []
@@ -224,6 +301,26 @@ def main() -> None:
     for path in files:
         print(f"wrote {path.relative_to(ROOT)}  "
               f"({path.stat().st_size / 1024:.1f} KB)")
+
+    gallery = write_gallery(files)
+    print(f"wrote {gallery.relative_to(ROOT)}  (图片画廊，双击即可看到全部 5 张图)")
+    print(">>> 图片在哪看：控制台是纯文本，不会显示图片本身；")
+    print("    PyCharm 左侧项目树展开 montecarlo-shapes/output/，双击 .png 即可预览，")
+    print("    或双击 output/index.html 一次看齐 5 张图。")
+
+    if args.show:
+        try:
+            opened = webbrowser.open(gallery.as_uri())
+        except Exception as exc:                 # 无图形环境下不让作业报错
+            opened, message = False, str(exc)
+        else:
+            message = ""
+        if opened:
+            print("已在浏览器打开图片画廊；若窗口没弹出，请手动双击 output/index.html。")
+        else:
+            print("浏览器未能自动打开" + (f"（{message}）" if message else "")
+                  + "，请手动双击 output/index.html。")
+
     print("done. run `python selftest.py` to verify.")
 
 

@@ -7,7 +7,7 @@ Python 课程作业，共 3 份。每份作业独立占一个文件夹，全部�
 | 作业 | 文件夹 | 内容 | 运行方式（进入该文件夹后） |
 | --- | --- | --- | --- |
 | 作业 1 | [`name-main/`](name-main/README.md) | `if __name__ == '__main__':` 的含义与 why：5 组对照实验 | `python run_all_demos.py` |
-| 作业 2 | [`montecarlo-shapes/`](montecarlo-shapes/README.md) | 蒙特卡罗方法手搓图形：手写 PNG 编码器 + 投点估 π、心形、Sierpinski、定积分、收敛曲线 | `python draw_all.py` / `python selftest.py` |
+| 作业 2 | [`montecarlo-shapes/`](montecarlo-shapes/README.md) | 蒙特卡罗方法手搓图形：手写 PNG 编码器 + 投点估 π、心形、Sierpinski、定积分、收敛曲线 | `python draw_all.py`（加 `--show` 自动看图）/ `python selftest.py` |
 | 作业 3 | [`character-grid/`](character-grid/README.md) | 教材 5.1 字符田字格绘制：函数化、任意尺寸 | `python demo.py 4` / `python selftest.py` |
 
 每个作业文件夹里都自带：

@@ -68,6 +68,14 @@ def main() -> None:
     for path in files:
         check_png(path)
 
+    # 7. 图片画廊：自包含 HTML，必须内嵌 5 张图
+    gallery = OUT / "index.html"
+    assert gallery.is_file(), "缺少 output/index.html"
+    html = gallery.read_text(encoding="utf-8")
+    assert html.count("data:image/png;base64,") == 5, "画廊内嵌图片数量不为 5"
+    print(f"  gallery ok  output/index.html  5 embedded images  "
+          f"{len(html.encode('utf-8')) / 1024:.1f} KB")
+
     print("\nALL CHECKS PASSED")
 
 

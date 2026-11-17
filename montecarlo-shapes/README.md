@@ -2,6 +2,12 @@
 
 > Python 作业 · 零第三方依赖（只用标准库）· Python 3.9+ · 固定随机种子，结果可复现
 
+**成果速览**（下面 5 张图均由本作业代码生成，点开可看大图）：
+
+| 投点估 π | 随机点心形 | Sierpinski | 蒙特卡罗积分 | 误差收敛 |
+| --- | --- | --- | --- | --- |
+| ![](output/01_pi_darts.png) | ![](output/02_heart.png) | ![](output/03_sierpinski.png) | ![](output/04_integral.png) | ![](output/05_convergence.png) |
+
 ## 一、这个作业在做什么
 
 不用 `numpy`、`matplotlib`、`Pillow`，也不调用任何现成绘图函数：往一个区域里**扔大量随机点**，按「点是否落在目标图形内」给对应像素上色，图形就自己被「点」出来了；同时用命中率反过来估算面积、定积分和 π。
@@ -9,14 +15,26 @@
 连输出的 PNG 图片都是按 PNG 规范一个字节一个字节写出来的，所以叫「手搓」。
 
 ```bash
-python draw_all.py     # 生成 output/ 下 5 张图，并打印统计表
-python selftest.py     # 自检：估算精度 + PNG 文件结构
+python draw_all.py          # 生成 output/ 下 5 张 PNG + 图片画廊，打印统计表
+python draw_all.py --show   # 生成后自动用浏览器打开画廊，直接看图
+python selftest.py          # 自检：估算精度 + PNG 结构 + 画廊
 ```
 
 不需要 `pip install` 任何东西。
 
 > **该运行哪个？** 只有 `draw_all.py`（出图 + 统计表）和 `selftest.py`（自检）能直接运行。
 > `mc_canvas.py`、`montecarlo.py` 是**被导入的工具模块**，里面只有 `def` / `class` 定义，没有主程序；单独点运行不会生成任何图片、控制台也不会有结果（现在会打印一句说明告诉你该运行哪个）。详见第七节。
+
+### 图在哪里看？
+
+运行结束后控制台只打印统计表和 `wrote output/...` 这样的文字——**控制台是纯文本终端，不会把图片画在窗口里，这是正常的**，不代表程序没画图。图片是 `output/` 目录下的真实文件：
+
+| 看法 | 操作 |
+| --- | --- |
+| 在 PyCharm 里（最常用） | 左侧项目树展开 `montecarlo-shapes/output/`，双击任一 `.png`，PyCharm 会用内置图片查看器打开；看不到新文件就右键 → **Reload from Disk** |
+| 一次看齐 5 张 | 双击 `output/index.html`，浏览器显示图片画廊（图片已内嵌，这个文件单独发给别人也能看） |
+| 最省事 | 运行 `python draw_all.py --show`，或在 PyCharm 右上角选 `02 montecarlo \| 生成图形并看图` |
+| 在 GitHub 上 | 本文件开头「成果速览」和第四节已直接嵌入 5 张图，网页上就能看到 |
 
 ## 二、原理
 
@@ -113,7 +131,8 @@ python selftest.py     # 自检：估算精度 + PNG 文件结构
 | `selftest.py` | 自检脚本：数值精度 + PNG 结构校验 | 是，运行这个 |
 | `montecarlo.py` | 采样与估算核心：面积、积分、π、收敛曲线、混沌游戏、网格参照 | 否，被导入用 |
 | `mc_canvas.py` | 点阵画布、Bresenham 直线、5×7 点阵字体、手写 PNG 编码器 | 否，被导入用 |
-| `output/*.png` | 生成的 5 张图，已随仓库提交，可直接查看 | — |
+| `output/*.png` | 生成的 5 张图（520×520），已随仓库提交，可直接查看 | — |
+| `output/index.html` | 图片画廊：5 张图内嵌在一个 HTML 里，双击即可看图 | — |
 | `.gitignore` | Git 忽略清单（排除 `__pycache__` 等缓存） | — |
 
 **为什么拆成 4 个 `.py`？** 一层只管一件事：改配色不用碰算法，改算法不用碰画图，这也是 Python 项目最常见的模块分工。调用关系如下：
@@ -126,6 +145,8 @@ selftest.py        ← 运行它（检查上面两层 + 5 张图）
 ```
 
 `montecarlo.py` 和 `mc_canvas.py` 里全是函数和类的**定义**，靠 `import` 被主程序调用。直接运行它们时 Python 只是把定义加载一遍就结束，所以控制台是空的——这不是报错，退出码也是 0。现在这两个文件都加了 `if __name__ == "__main__":` 提示块，误点时会打印一句说明和一个最小演示，告诉你要运行 `draw_all.py`。这正是本合集第 1 份作业讲的保护块用法。
+
+`write_gallery()` 也在 `draw_all.py` 里：把 5 张 PNG 用标准库 `base64` 内嵌成一个 HTML 画廊，没有新增代码文件；加 `--show` 参数时用 `webbrowser` 自动打开它，同样只用标准库。
 
 ## 八、结论
 
