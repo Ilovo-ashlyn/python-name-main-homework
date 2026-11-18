@@ -9,7 +9,7 @@ Python 课程作业，共 4 份。每份作业独立占一个文件夹，主实�
 | 作业 | 文件夹 | 内容 | 运行方式（进入该文件夹后） |
 | --- | --- | --- | --- |
 | 作业 1 | [`name-main/`](name-main/README.md) | `if __name__ == '__main__':` 的含义与 why：5 组对照实验 | `python run_all_demos.py` |
-| 作业 2 | [`montecarlo-shapes/`](montecarlo-shapes/README.md) | 蒙特卡罗方法手搓图形：手写 PNG 编码器 + 投点估 π、心形、Sierpinski、定积分、收敛曲线；另附可选 numpy + matplotlib 对照版 | `python draw_all.py`（加 `--show` 自动看图）/ `python selftest.py`；对照版：`pip install -r requirements.txt` 后 `python montecarlo_numpy.py --show` |
+| 作业 2 | [`montecarlo-shapes/`](montecarlo-shapes/README.md) | 蒙特卡罗方法手搓图形：手写 PNG 编码器 + 投点估 π、心形、Sierpinski、定积分、收敛曲线；另附可选 numpy + matplotlib 对照版 | `python draw_all.py`（**运行即自动显示 5 张图案**）/ `python selftest.py`；对照版：`pip install -r requirements.txt` 后 `python montecarlo_numpy.py`（运行即弹出图形窗口）。无界面时加 `--no-show` |
 | 作业 3 | [`character-grid/`](character-grid/README.md) | 教材 5.1 字符田字格绘制：函数化、任意尺寸 | `python demo.py 4` / `python selftest.py` |
 | 作业 4 | [`koch-snowflake/`](koch-snowflake/README.md) | 绘制科赫雪花、按阶数生成 0~4 阶：递归 + 手写 PNG 编码器，附周长/面积公式与教材 turtle 版对照 | `python draw_all.py`（可指定阶数，如 `python draw_all.py 3`；加 `--show` 自动看图）/ `python selftest.py` |
 

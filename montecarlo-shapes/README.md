@@ -17,26 +17,32 @@
 连输出的 PNG 图片都是按 PNG 规范一个字节一个字节写出来的，所以叫「手搓」。
 
 ```bash
-python draw_all.py          # 生成 output/ 下 5 张 PNG + 图片画廊，打印统计表
-python draw_all.py --show   # 生成后自动用浏览器打开画廊，直接看图
-python selftest.py          # 自检：估算精度 + PNG 结构 + 画廊
+python draw_all.py             # 运行 → 自动弹出浏览器，直接显示 5 张图案
+python draw_all.py --no-show    # 只生成文件、不自动显示（无图形界面时用）
+python montecarlo_numpy.py     # 运行 → 弹出图形窗口显示 5 张图案（需先装依赖）
+python selftest.py             # 自检：估算精度 + PNG 结构 + 画廊
 ```
+
+**运行即显示**：两个入口默认都会把图案显示在屏幕上，不需要手动去 `output/` 里点图片文件；图片文件只是顺带保存、用来交作业和贴在 README 里的副产品。
 
 **主实现不需要 `pip install` 任何东西**；只有第九节那个可选的 numpy 对照版需要安装依赖。
 
-> **该运行哪个？** 只有 `draw_all.py`（出图 + 统计表）和 `selftest.py`（自检）能直接运行。
+> **该运行哪个？** 能直接运行的是 `draw_all.py`（主实现，运行即显示）、`montecarlo_numpy.py`（可选对照版，运行即弹窗）和 `selftest.py`（自检）。
 > `mc_canvas.py`、`montecarlo.py` 是**被导入的工具模块**，里面只有 `def` / `class` 定义，没有主程序；单独点运行不会生成任何图片、控制台也不会有结果（现在会打印一句说明告诉你该运行哪个）。详见第七节。
 
-### 图在哪里看？
+### 运行后图案怎么显示
 
-运行结束后控制台只打印统计表和 `wrote output/...` 这样的文字——**控制台是纯文本终端，不会把图片画在窗口里，这是正常的**，不代表程序没画图。图片是 `output/` 目录下的真实文件：
+**运行完程序，图案会自己显示出来**，不用去点任何图片文件：
 
-| 看法 | 操作 |
+| 入口 | 运行后看到什么 |
 | --- | --- |
-| 在 PyCharm 里（最常用） | 左侧项目树展开 `montecarlo-shapes/output/`，双击任一 `.png`，PyCharm 会用内置图片查看器打开；看不到新文件就右键 → **Reload from Disk** |
-| 一次看齐 5 张 | 双击 `output/index.html`，浏览器显示图片画廊（图片已内嵌，这个文件单独发给别人也能看） |
-| 最省事 | 运行 `python draw_all.py --show`，或在 PyCharm 右上角选 `02 montecarlo \| 生成图形并看图` |
-| 在 GitHub 上 | 本文件开头「成果速览」和第四节已直接嵌入 5 张图，网页上就能看到 |
+| `draw_all.py`（零依赖主实现） | 自动用默认浏览器打开 `output/index.html`，一页显示 5 张图 |
+| `montecarlo_numpy.py`（numpy 版） | 弹出一个 matplotlib 图形窗口，2×3 排布直接显示 5 张图案和统计摘要；关掉窗口程序结束 |
+| 无图形界面 / 只要文件 | 两个入口都加 `--no-show`，只生成文件不弹出 |
+
+PyCharm 里最省事的是右上角选 **`02 montecarlo | 运行即显示图案（numpy）`** 点 ▶；控制台是纯文本终端，只打印统计表，图案在自动弹出的窗口/浏览器里看。若窗口没弹出，检查是不是设了 `MPLBACKEND=Agg` 或用了 `--no-show`。
+
+图片文件依然保存在 `output/`（`output/numpy/` 是 numpy 版），用于交作业和 GitHub 展示；`output/index.html` 里的图片是内嵌的，单独发给别人也能看。
 
 ## 二、原理
 
@@ -129,13 +135,13 @@ python selftest.py          # 自检：估算精度 + PNG 结构 + 画廊
 | 文件 | 作用 | 能直接运行？ |
 | --- | --- | --- |
 | `README.md` | 作业说明（本文件） | — |
-| `draw_all.py` | **主程序**：跑 5 个实验、生成图片、打印统计表 | 是，运行这个 |
+| `draw_all.py` | **主程序（运行即显示）**：跑 5 个实验、打印统计表、自动弹出浏览器显示图案 | 是，运行这个 |
 | `selftest.py` | 自检脚本：数值精度 + PNG 结构校验 | 是，运行这个 |
 | `montecarlo.py` | 采样与估算核心：面积、积分、π、收敛曲线、混沌游戏、网格参照 | 否，被导入用 |
 | `mc_canvas.py` | 点阵画布、Bresenham 直线、5×7 点阵字体、手写 PNG 编码器 | 否，被导入用 |
 | `output/*.png` | 生成的 5 张图（520×520），已随仓库提交，可直接查看 | — |
 | `output/index.html` | 图片画廊：5 张图内嵌在一个 HTML 里，双击即可看图 | — |
-| `montecarlo_numpy.py` | **可选对照版入口**：numpy 向量化 + matplotlib 出图（见第九节） | 是，需先装依赖 |
+| `montecarlo_numpy.py` | **可选对照版入口（运行即弹窗）**：numpy 向量化 + matplotlib 出图（见第九节） | 是，需先装依赖 |
 | `requirements.txt` | 可选对照版的依赖清单（numpy、matplotlib） | — |
 | `output/numpy/` | 对照版生成的 5 张 PNG + `index.html` 画廊，不覆盖手搓版图片 | — |
 | `.gitignore` | Git 忽略清单（排除 `__pycache__` 等缓存） | — |
@@ -167,13 +173,16 @@ selftest.py        ← 运行它（检查上面两层 + 5 张图）
 
 ```bash
 pip install -r requirements.txt        # 安装 numpy 与 matplotlib
-python montecarlo_numpy.py            # 生成 5 张图 + 画廊，打印统计表
-python montecarlo_numpy.py --show     # 生成后自动打开浏览器看图
+python montecarlo_numpy.py             # 运行 → 直接弹出图形窗口显示 5 张图案
+python montecarlo_numpy.py --no-show   # 只存文件、不弹窗（无图形界面时用）
+python montecarlo_numpy.py --gallery   # 另外用浏览器打开 HTML 画廊
 ```
+
+**这一版默认就弹窗显示图案**，和主实现一样不需要去点图片文件。
 
 本机 PyCharm 项目已配置好：解释器 `D:\pycharm\venv\Scripts\python.exe`（Python 3.13.0）里已安装 **numpy 2.5.5 / matplotlib 3.11.2**（以及 matplotlib 的 9 个依赖包）。在 PyCharm 右上角下拉选 **`02 montecarlo | numpy + matplotlib 版`** 点 ▶ 即可，Settings → Python Interpreter 里能看到这些包。
 
-图片输出到 `output/numpy/`，**不覆盖**手搓版的 `output/*.png`；双击 `output/numpy/index.html` 一次看齐 5 张图。控制台依旧只打印文字，不会把图片画在终端里。
+图案在自动弹出的图形窗口里显示，关掉窗口后程序结束；图片同时保存到 `output/numpy/`，**不覆盖**手搓版的 `output/*.png`，作为可提交、可离线查看的副产品。控制台依旧只打印统计表。
 
 | 投点估 π | 随机点心形 | Sierpinski | 蒙特卡罗积分 | 误差收敛 |
 | --- | --- | --- | --- | --- |
@@ -190,7 +199,7 @@ python montecarlo_numpy.py --show     # 生成后自动打开浏览器看图
 | 第三方依赖 | 无 | numpy、matplotlib |
 | 教学价值 | 看清底层每一步怎么实现 | 看清实际工程里怎么写得更短、更快 |
 
-对照版里 `matplotlib.use("Agg")` 是为了在没有图形界面/后台运行时也能保存图片；标题用英文是避免 matplotlib 缺少中文字体时显示成方块。它自己带断言式自检（估算误差、5 张图、画廊），运行结束会打印 `ALL CHECKS PASSED (numpy + matplotlib 版)`。
+对照版默认使用 matplotlib 的**交互式后端**，`plt.show()` 才能弹出图形窗口（所以不再强制 `Agg`）；无图形界面时设环境变量 `MPLBACKEND=Agg` 或加 `--no-show` 即可跳过弹窗。窗口里的中文指定微软雅黑渲染，单张图片内部的标题仍用英文，避免跨字体缺字。它自己带断言式自检（估算误差、5 张图、画廊），运行结束会打印 `ALL CHECKS PASSED (numpy + matplotlib 版)`。
 
 ### 对照版实测结果
 

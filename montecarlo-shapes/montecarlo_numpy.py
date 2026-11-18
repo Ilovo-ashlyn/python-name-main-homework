@@ -1,17 +1,19 @@
 """蒙特卡罗方法 —— numpy + matplotlib 对照版（可选，需要第三方库）。
 
-这是一个**独立的可运行入口**，把 `draw_all.py` 的 5 个实验用 numpy 向量化
-重写、用 matplotlib 出图，用来对照「手搓」与「用库」两种写法：
+**运行这个脚本就会弹出一个图形窗口，把 5 个实验的图案直接显示在屏幕上**，
+不需要手动去 output/ 里点图片文件：
 
-    python montecarlo_numpy.py           # 生成 5 张图 + 画廊，打印统计表
-    python montecarlo_numpy.py --show    # 生成后自动用浏览器打开画廊
+    python montecarlo_numpy.py           # 运行 → 直接弹出图形窗口显示 5 张图案
+    python montecarlo_numpy.py --no-show  # 只生成文件、不弹窗（无图形界面时用）
+    python montecarlo_numpy.py --gallery  # 另外用浏览器打开 HTML 画廊
 
 依赖（仅本文件需要，主程序 draw_all.py 与其余作业仍是零依赖）：
 
     pip install -r requirements.txt
 
-图片输出到 output/numpy/，不覆盖手搓版的 output/*.png。
-控制台是纯文本终端，不会显示图片本身；看图请双击 output/numpy/index.html。
+图片同时保存到 output/numpy/，作为可提交、可离线查看的副产品，不覆盖手搓版的
+output/*.png。它把 draw_all.py 的 5 个实验用 numpy 向量化重写、用 matplotlib
+出图，用来对照「手搓」与「用库」两种写法。
 """
 
 from __future__ import annotations
@@ -26,8 +28,10 @@ from pathlib import Path
 import numpy as np
 import matplotlib
 
-matplotlib.use("Agg")                     # 无图形界面 / PyCharm 后台也能保存图片
+# 默认用交互式后端：运行代码时 plt.show() 会直接弹出图形窗口显示图案。
+# 无图形界面时设置环境变量 MPLBACKEND=Agg，或加 --no-show 只保存文件。
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from matplotlib.patches import Circle
 
 ROOT = Path(__file__).resolve().parent
@@ -45,7 +49,7 @@ CAPTIONS = {
     "01_pi_darts.png": "实验 1 · numpy 向量化投点估算 π",
     "02_heart.png": "实验 2 · numpy 判断心形隐函数并估算面积",
     "03_sierpinski.png": "实验 3 · 混沌游戏画 Sierpinski 三角形",
-    "04_integral.png": "实验 4 · 投点算定积分 ∫₀¹√(1-x²)dx",
+    "04_integral.png": "实验 4 · 投点算定积分（四分之一圆面积）",
     "05_convergence.png": "实验 5 · 误差随样本量收敛，对照 1/√N",
 }
 
@@ -251,12 +255,56 @@ def write_gallery(files: list[Path]) -> Path:
     return target
 
 
+def show_figures(files: list[Path], rows: list[Est]) -> None:
+    """运行结束时直接弹出图形窗口，把 5 张图案显示在屏幕上。
+
+    这是**默认行为**：不需要手动去 output/numpy/ 里点图片文件。
+    图片本身只是顺带保存的副产品，方便交作业和放进 README。
+    """
+    plt.rcParams["font.sans-serif"] = ["Microsoft YaHei", "SimHei", "DejaVu Sans"]
+    plt.rcParams["axes.unicode_minus"] = False
+
+    fig, axes = plt.subplots(2, 3, figsize=(13.5, 9.2))
+    try:
+        fig.canvas.manager.set_window_title("蒙特卡罗方法 · 运行结果")
+    except Exception:
+        pass
+    fig.suptitle("蒙特卡罗方法 · 5 个实验图案（numpy 采样 + matplotlib 绘图）",
+                 fontsize=15, color=INK)
+    for ax, path in zip(axes.flat[:5], files):
+        ax.imshow(mpimg.imread(path))
+        caption = CAPTIONS.get(path.name, path.name)
+        ax.set_title(caption.split(" · ", 1)[-1], fontsize=11, color=INK)
+        ax.axis("off")
+
+    last = axes.flat[5]
+    last.axis("off")
+    lines = [f"随机种子 {SEED}（固定，结果可复现）", "",
+             "统计结果（控制台有完整表格）"]
+    for est in rows:
+        ref = "" if est.reference is None else f"   参考 {est.reference:.5f}"
+        lines.append(f"{est.name}: {est.value:.5f}{ref}")
+    lines += ["", "关闭本窗口后程序结束。",
+              "图片同时保存在 output/numpy/，",
+              "双击其中的 index.html 也可离线查看。"]
+    last.text(0.02, 0.96, "\n".join(lines), va="top", ha="left",
+              fontsize=11, color=INK, linespacing=1.7,
+              transform=last.transAxes)
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
+    plt.show()
+    plt.close(fig)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="蒙特卡罗方法 numpy + matplotlib 对照版（需要 pip install -r requirements.txt）"
     )
     parser.add_argument("--show", action="store_true",
-                        help="生成后用浏览器自动打开 output/numpy/index.html 看图")
+                        help="兼容旧命令：现在默认就会弹出图形窗口，此参数可省略")
+    parser.add_argument("--no-show", action="store_true",
+                        help="不弹图形窗口，只保存图片文件（无图形界面时使用）")
+    parser.add_argument("--gallery", action="store_true",
+                        help="另外用浏览器打开 output/numpy/index.html 画廊")
     args = parser.parse_args(argv)
 
     OUT.mkdir(parents=True, exist_ok=True)
@@ -291,9 +339,7 @@ def main(argv: list[str] | None = None) -> None:
               f"({path.stat().st_size / 1024:.1f} KB)")
 
     gallery = write_gallery(files)
-    print(f"wrote {gallery.relative_to(ROOT)}  (图片画廊，双击即可看到全部 5 张图)")
-    print(">>> 图片在哪看：控制台是纯文本，不会显示图片本身；")
-    print("    双击 output/numpy/index.html 一次看齐 5 张图，或展开 output/numpy/ 双击 .png。")
+    print(f"wrote {gallery.relative_to(ROOT)}  (图片画廊，可离线查看)")
 
     # 自检：误差在统计合理范围内、5 张图都生成成功
     assert rows[0].error is not None and rows[0].error < 0.05, "π 估算偏离过大"
@@ -303,18 +349,22 @@ def main(argv: list[str] | None = None) -> None:
     assert gallery.stat().st_size > 1000, "画廊未生成"
     print("ALL CHECKS PASSED (numpy + matplotlib 版)")
 
-    if args.show:
+    if not args.no_show:
+        print(">>> 正在弹出图形窗口，直接显示 5 张图案（关闭窗口后程序结束）...")
         try:
-            opened = webbrowser.open(gallery.as_uri())
+            show_figures(files, rows)
+            print(">>> 图案已在图形窗口显示完毕，不需要手动去点图片文件。")
         except Exception as exc:                # 无图形环境下不让作业报错
-            opened, message = False, str(exc)
-        else:
-            message = ""
-        if opened:
-            print("已在浏览器打开图片画廊；若窗口没弹出，请手动双击 output/numpy/index.html。")
-        else:
-            print("浏览器未能自动打开" + (f"（{message}）" if message else "")
-                  + "，请手动双击 output/numpy/index.html。")
+            print(f">>> 图形窗口未能弹出（{exc}）；图片仍已保存在 output/numpy/ 下。")
+    else:
+        print(">>> 已跳过图形窗口（--no-show）；图片保存在 output/numpy/ 下。")
+
+    if args.gallery:
+        try:
+            webbrowser.open(gallery.as_uri())
+            print("已在浏览器打开图片画廊。")
+        except Exception as exc:
+            print(f"浏览器未能自动打开（{exc}）。")
 
     print("done. 对照零依赖手搓版：python draw_all.py")
 

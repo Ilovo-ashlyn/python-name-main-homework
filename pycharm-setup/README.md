@@ -26,10 +26,10 @@
 | 运行配置 | 作用 |
 | --- | --- |
 | `01 name-main \| 五个实验` | 一次跑完 `__name__` 的全部对照实验 |
-| `02 montecarlo \| 生成图形` | 生成 5 张 PNG 和 `output/index.html` 图片画廊 |
-| `02 montecarlo \| 生成图形并看图` | 同上，并自动用浏览器打开画廊（等价于 `python draw_all.py --show`） |
+| `02 montecarlo \| 生成图形` | 生成 5 张 PNG，并自动弹出浏览器画廊直接显示图案 |
+| `02 montecarlo \| 生成图形并看图` | 同上（旧参数名，现在默认就会自动显示） |
 | `02 montecarlo \| 自检` | 校验 PNG 结构、统计结果与图片画廊 |
-| `02 montecarlo \| numpy + matplotlib 版` | 可选对照版：生成 `output/numpy/` 下 5 张图并打开画廊，**需先装 requirements.txt** |
+| `02 montecarlo \| 运行即显示图案（numpy）` | **运行后弹出图形窗口，直接显示 5 张图案**，需先装 requirements.txt |
 | `03 character-grid \| n=4 示例` | 画 4×4 田字格并生成示例文本 |
 | `03 character-grid \| 自检` | 校验行数、列数、边框位置 |
 | `04 koch-snowflake \| 生成 0~4 阶并看图` | 生成 5 个阶数的雪花 PNG 并打开画廊 |
@@ -37,7 +37,7 @@
 
 > 运行配置里的解释器路径是本机专用的，换电脑后按第 3 步重新选一次即可。
 >
-> 蒙特卡罗和科赫雪花作业的控制台**只打印文字**，图片是 `output/*.png` 文件：在 PyCharm 项目树里双击 PNG 即可预览，或双击 `output/index.html` 一次看齐全部图片；numpy 对照版的图在 `output/numpy/index.html`。
+> 蒙特卡罗的两个入口**运行即显示图案**：手搓版自动打开浏览器画廊，numpy 版弹出 matplotlib 图形窗口；都不需要手动去 `output/` 里点图片文件。无图形界面时加 `--no-show` 只生成文件。科赫雪花作业的图片仍是 `output/*.png`，双击 `output/index.html` 可一次看齐。
 >
 > 装完第三方包后，PyCharm 的 **Settings → Python Interpreter** 软件包列表若没立即显示，点一下刷新或重新打开项目即可。
 

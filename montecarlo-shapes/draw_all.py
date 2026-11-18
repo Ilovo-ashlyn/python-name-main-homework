@@ -1,11 +1,12 @@
-"""一键生成全部图形与统计表（本作业的运行入口）。
+"""运行入口：跑完 5 个实验后自动弹出浏览器，直接把图案显示出来。
 
-运行：python draw_all.py            # 生成 5 张 PNG + 图片画廊，打印统计表
-      python draw_all.py --show     # 生成后用浏览器自动打开画廊看图
+运行：python draw_all.py            # 生成 5 张 PNG，并自动弹出浏览器直接显示图案
+      python draw_all.py --no-show  # 只生成文件、不自动显示（无图形界面时用）
 输出：output/*.png —— 全部由本项目自己编码，可直接打开或交作业。
-      output/index.html —— 把 5 张图内嵌在一起的画廊，双击即可看图。
+      output/index.html —— 把 5 张图内嵌在一起的画廊，运行时自动打开。
 
-注意：控制台是纯文本终端，不会显示图片本身；图片是 output/ 目录下的文件。
+注意：控制台是纯文本终端，不会把图片画在文字窗口里；图案由运行时自动弹出的
+      浏览器画廊显示，不需要手动去点图片文件。
 """
 
 from __future__ import annotations
@@ -263,7 +264,11 @@ def main(argv: list[str] | None = None) -> None:
     )
     parser.add_argument(
         "--show", action="store_true",
-        help="生成后用浏览器自动打开 output/index.html 看图",
+        help="兼容旧命令：现在默认就会自动显示图案，此参数可省略",
+    )
+    parser.add_argument(
+        "--no-show", action="store_true",
+        help="只生成图片文件、不自动弹出显示（无图形界面时使用）",
     )
     args = parser.parse_args(argv)
 
@@ -303,12 +308,9 @@ def main(argv: list[str] | None = None) -> None:
               f"({path.stat().st_size / 1024:.1f} KB)")
 
     gallery = write_gallery(files)
-    print(f"wrote {gallery.relative_to(ROOT)}  (图片画廊，双击即可看到全部 5 张图)")
-    print(">>> 图片在哪看：控制台是纯文本，不会显示图片本身；")
-    print("    PyCharm 左侧项目树展开 montecarlo-shapes/output/，双击 .png 即可预览，")
-    print("    或双击 output/index.html 一次看齐 5 张图。")
+    print(f"wrote {gallery.relative_to(ROOT)}  (图片画廊，运行时自动打开)")
 
-    if args.show:
+    if not args.no_show:
         try:
             opened = webbrowser.open(gallery.as_uri())
         except Exception as exc:                 # 无图形环境下不让作业报错
@@ -316,10 +318,12 @@ def main(argv: list[str] | None = None) -> None:
         else:
             message = ""
         if opened:
-            print("已在浏览器打开图片画廊；若窗口没弹出，请手动双击 output/index.html。")
+            print(">>> 图案已自动弹出：浏览器里一次显示 5 张图，不需要手动去点图片文件。")
         else:
-            print("浏览器未能自动打开" + (f"（{message}）" if message else "")
-                  + "，请手动双击 output/index.html。")
+            print(">>> 自动显示失败" + (f"（{message}）" if message else "")
+                  + "，图片仍已生成在 output/ 下。")
+    else:
+        print(">>> 已跳过自动显示（--no-show）；图片保存在 output/ 下。")
 
     print("done. run `python selftest.py` to verify.")
 

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="02 montecarlo | numpy + matplotlib 版" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="false">
+  <configuration default="false" name="02 montecarlo | 运行即显示图案（numpy）" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="false">
     <module name="pycharm" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -12,7 +12,7 @@
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/montecarlo-shapes/montecarlo_numpy.py" />
-    <option name="PARAMETERS" value="--show" />
+    <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="false" />
