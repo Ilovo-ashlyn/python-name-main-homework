@@ -105,9 +105,15 @@ if __name__ == "__main__":
     from streamlit.runtime.scriptrunner import get_script_run_ctx
 
     if get_script_run_ctx(suppress_warning=True) is None:
-        # 直接 python app.py 时没有网页服务上下文，自动改用 streamlit run 启动
-        print("检测到直接运行本文件，已自动改用 streamlit run 启动网页服务…", flush=True)
-        print("浏览器打开 http://localhost:8501；看完在 PyCharm 点 ■ 停止。", flush=True)
-        raise SystemExit(subprocess.call(
-            [sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve())]))
+        # 直接 python app.py 时没有网页服务上下文，自动以 streamlit run 启动。
+        # showEmailPrompt=false：跳过首次运行的邮箱询问（否则服务会卡在 Email: 提示符）；
+        # headless=false：让 Streamlit 在服务就绪后自动打开浏览器。
+        print("正在启动看板，服务就绪后会自动打开浏览器…", flush=True)
+        print("看完在 PyCharm 点 ■ 停止服务。", flush=True)
+        raise SystemExit(subprocess.call([
+            sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve()),
+            "--server.showEmailPrompt", "false",
+            "--server.headless", "false",
+            "--browser.gatherUsageStats", "false",
+        ]))
     main()

@@ -15,7 +15,7 @@
     <option name="DEBUG_JUST_MY_CODE" value="true" />
     <option name="RUN_TOOL" value="" />
     <option name="SCRIPT_NAME" value="streamlit" />
-    <option name="PARAMETERS" value="run app.py" />
+    <option name="PARAMETERS" value="run app.py --server.showEmailPrompt false --server.headless false --browser.gatherUsageStats false" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
     <option name="MODULE_MODE" value="true" />
