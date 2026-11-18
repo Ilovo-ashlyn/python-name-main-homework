@@ -45,5 +45,3 @@ python-name-main-homework/
 ├── pycharm-setup/       ← 非作业内容：本机 PyCharm 配置与同步脚本
 └── .gitignore          ← Git 忽略清单
 ```
-
-> 把网址发给老师时，看六个作业文件夹和 `exp2/` 即可；`pycharm-setup/` 只是开发工具配置。
