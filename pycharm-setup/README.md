@@ -31,6 +31,20 @@
 > 运行配置里的解释器路径是本机专用的，换电脑后按第 3 步重新选一次即可。
 > 作业 2、4 用 `plt.show()` 弹窗；若 PyCharm 开着 Scientific Mode，图会显示在右侧 SciView 里，关掉它就弹独立窗口。
 
+## 本机已知问题：Tcl/Tk 路径（2026-11-18 已修复）
+
+系统 Python 装在 `D:\` 根目录，它的 `_tkinter` 只按 `D:/lib/tcl8.6` 之类的路径找 `init.tcl`，而文件实际在 `D:\tcl\tcl8.6\`，所以 matplotlib 默认的 `TkAgg` 后端一创建窗口就报 `_tkinter.TclError: Can't find a usable init.tcl`，两道画图作业会崩。
+
+修复写在本机 venv 的 `Lib/site-packages/sitecustomize.py`（Python 启动时自动加载，**作业代码一行都不用改**）：
+
+```python
+import os
+os.environ.setdefault("TCL_LIBRARY", r"D:\tcl\tcl8.6")
+os.environ.setdefault("TK_LIBRARY", r"D:\tcl\tk8.6")
+```
+
+换电脑若遇到同样报错，给解释器设置这两个环境变量，或把 Python 装到正常目录即可；官方安装的 Python 自带完整 Tcl，不需要这一步。
+
 ## 改完代码怎么上传
 
 在**仓库根目录**执行：
