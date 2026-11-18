@@ -8,7 +8,9 @@
 streamlit run app.py
 ```
 
-浏览器打开 http://localhost:8501 即可看到看板。PyCharm 里也可直接选右上角运行配置「实验2 | 数据看板（Streamlit）」点 ▶。
+浏览器打开 http://localhost:8501 即可看到看板。PyCharm 里选右上角运行配置「实验2 | 数据看板（Streamlit）」点 ▶；看完点 ■ 停止服务。
+
+> **注意**：Streamlit 是网页服务，不能像普通脚本那样 `python app.py`。若误选了 PyCharm 自动生成的 `app` 配置（或直接点编辑器里的绿色 ▶），会因缺少 `ScriptRunContext` 在控制台反复刷警告，且不会有网页。`app.py` 入口已做兼容：检测到这种运行方式会自动改用 `streamlit run` 重启，两种方式现在都能打开看板。
 
 依赖：`pip install streamlit pandas plotly`；本机 `D:\pycharm\venv` 已装好 streamlit 1.67.0 / pandas 3.1.1 / plotly 7.1.0。
 
@@ -62,3 +64,4 @@ streamlit run app.py
   1. 图表中文与浅灰背景冲突 → 统一设 `Microsoft YaHei` 字体、图表白底。
   2. 新版 Streamlit 的 `st.plotly_chart` 已默认 `width="stretch"` → 不再传旧参数 `use_container_width`。
   3. CSV 带中文且需兼容 Excel → 用 `utf-8-sig` 保存，读取时显式指定 `encoding="utf-8-sig"`。
+  4. 在 PyCharm 里把 `app.py` 当普通 Python 脚本运行 → 控制台反复刷 `missing ScriptRunContext` 警告且没有网页；在入口用 `get_script_run_ctx(suppress_warning=True)` 检测，没有服务上下文时自动以 `streamlit run` 重新启动。

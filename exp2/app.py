@@ -100,4 +100,14 @@ def main():
 
 
 if __name__ == "__main__":
+    import subprocess
+    import sys
+    from streamlit.runtime.scriptrunner import get_script_run_ctx
+
+    if get_script_run_ctx(suppress_warning=True) is None:
+        # 直接 python app.py 时没有网页服务上下文，自动改用 streamlit run 启动
+        print("检测到直接运行本文件，已自动改用 streamlit run 启动网页服务…", flush=True)
+        print("浏览器打开 http://localhost:8501；看完在 PyCharm 点 ■ 停止。", flush=True)
+        raise SystemExit(subprocess.call(
+            [sys.executable, "-m", "streamlit", "run", str(Path(__file__).resolve())]))
     main()
