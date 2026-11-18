@@ -1,161 +1,79 @@
-"""蒙特卡罗采样核心：只用标准库 random / math。
+"""作业 2：蒙特卡罗方法手搓图形 —— 投点估 π、心形面积、定积分，画分形与收敛曲线。
 
-思想：想要某个量（面积、积分、π），就把它写成"随机点落入某区域的概率"，
-再用频率去近似概率。大数定律保证 N 越大越准，误差量级约 1/sqrt(N)。
+运行：python montecarlo.py   （自动弹出图形窗口，不用去点图片文件）
+依赖：pip install numpy matplotlib
 """
+import numpy as np
+import matplotlib.pyplot as plt
 
-from __future__ import annotations
+plt.rcParams["font.sans-serif"] = ["Microsoft YaHei", "SimHei"]
+plt.rcParams["axes.unicode_minus"] = False
 
-import math
-import random
-from dataclasses import dataclass
-from typing import Callable, Iterator
+rng = np.random.default_rng(20261116)   # 固定种子，每次跑结果一样
+N = 20000                               # 投点数，调大更准
 
+# ① 在 [0,1]² 正方形投点，落在 1/4 圆内 -> π ≈ 4 × 命中率
+darts = rng.random((N, 2))
+x, y = darts[:, 0], darts[:, 1]
+hit_pi = x**2 + y**2 <= 1
+pi_hat = 4 * hit_pi.mean()
 
-@dataclass
-class Estimate:
-    """一次估算的结果。"""
-    name: str
-    hits: int
-    total: int
-    value: float
-    reference: float | None = None
+# ② 在 [-1.5,1.5]² 投点，落在心形 (x²+y²-1)³ ≤ x²y³ 内 -> 心形面积
+heart = rng.uniform(-1.5, 1.5, (N, 2))
+hx, hy = heart[:, 0], heart[:, 1]
+hit_heart = (hx**2 + hy**2 - 1)**3 <= hx**2 * hy**3
+heart_area = 9 * hit_heart.mean()        # 采样框面积 = 3×3 = 9
 
-    @property
-    def hit_ratio(self) -> float:
-        return self.hits / self.total
+# ③ 投点算定积分 ∫₀¹ √(1-x²) dx：数落在曲线下方的点
+ix, iy = rng.random(N), rng.random(N)
+hit_int = iy <= np.sqrt(1 - ix**2)
+integral = hit_int.mean()
 
-    @property
-    def error(self) -> float | None:
-        if self.reference is None:
-            return None
-        return abs(self.value - self.reference)
+# ④ 谢尔宾斯基三角形：随机选一个顶点，走到和它的中点，重复
+corners = np.array([[0., 0.], [1., 0.], [0.5, 3**0.5 / 2]])
+chaos = [np.array([0.1, 0.1])]
+for _ in range(20000):
+    chaos.append((chaos[-1] + corners[rng.integers(3)]) / 2)
+chaos = np.array(chaos)
 
-    def row(self) -> str:
-        ref = "n/a" if self.reference is None else f"{self.reference:.5f}"
-        err = "n/a" if self.error is None else f"{self.error:.5f}"
-        return (f"{self.name:<18} hits={self.hits:>7}/{self.total:<7} "
-                f"ratio={self.hit_ratio:.5f}  value={self.value:.5f}  "
-                f"ref={ref:>8}  err={err}")
+# ⑤ π 的估计值随投点数增加而变化
+curve = 4 * np.cumsum(hit_pi) / np.arange(1, N + 1)
 
+print(f"π ≈ {pi_hat:.5f}   心形面积 ≈ {heart_area:.5f}   定积分 ≈ {integral:.5f}")
 
-def estimate_pi(rng: random.Random, n: int) -> Estimate:
-    """单位正方形里的四分之一圆：命中率 ≈ π/4。"""
-    hits = 0
-    for _ in range(n):
-        x, y = rng.random(), rng.random()
-        if x * x + y * y <= 1.0:
-            hits += 1
-    return Estimate("pi by darts", hits, n, 4.0 * hits / n, math.pi)
+# ---------- 画图：一个窗口摆 6 格，运行即弹出 ----------
+fig, ax = plt.subplots(2, 3, figsize=(12, 7))
+fig.suptitle("蒙特卡罗投点法（种子 20261116，N = 20000）")
 
+ax[0, 0].scatter(x[hit_pi], y[hit_pi], s=1, c="crimson")
+ax[0, 0].scatter(x[~hit_pi], y[~hit_pi], s=1, c="lightgray")
+ax[0, 0].set_title(f"① 1/4 圆投点 → π ≈ {pi_hat:.4f}")
 
-def area_experiment(
-    rng: random.Random,
-    n: int,
-    predicate: Callable[[float, float], bool],
-    box: tuple[float, float, float, float],
-    name: str = "area",
-    reference: float | None = None,
-) -> tuple[Estimate, list[tuple[float, float, bool]]]:
-    """在矩形 box 内投 n 个点，估算满足 predicate 的区域面积。
+ax[0, 1].scatter(hx[hit_heart], hy[hit_heart], s=1, c="crimson")
+ax[0, 1].scatter(hx[~hit_heart], hy[~hit_heart], s=1, c="lightgray")
+ax[0, 1].set_title(f"② 心形面积 ≈ {heart_area:.4f}")
 
-    面积 ≈ 矩形面积 × 命中率。返回采样点是为了画图（不是估算必需的）。
-    """
-    xmin, xmax, ymin, ymax = box
-    points: list[tuple[float, float, bool]] = []
-    hits = 0
-    for _ in range(n):
-        x = rng.uniform(xmin, xmax)
-        y = rng.uniform(ymin, ymax)
-        inside = predicate(x, y)
-        if inside:
-            hits += 1
-        points.append((x, y, inside))
-    value = (xmax - xmin) * (ymax - ymin) * hits / n
-    return Estimate(name, hits, n, value, reference), points
+ax[0, 2].scatter(chaos[:, 0], chaos[:, 1], s=0.2, c="#4c78a8")
+ax[0, 2].set_title("③ 随机中点 → 谢尔宾斯基")
 
+ax[1, 0].scatter(ix[hit_int], iy[hit_int], s=1, c="crimson")
+ax[1, 0].scatter(ix[~hit_int], iy[~hit_int], s=1, c="lightgray")
+ax[1, 0].set_title(f"④ 曲线下投点 → 积分 ≈ {integral:.4f}")
 
-def integral_experiment(
-    rng: random.Random,
-    n: int,
-    f: Callable[[float], float],
-    a: float,
-    b: float,
-    ymax: float,
-    reference: float | None = None,
-) -> tuple[Estimate, list[tuple[float, float, bool]]]:
-    """用投点估算 ∫[a,b] f(x) dx：点落在曲线下方的比例 × 矩形面积。"""
-    points: list[tuple[float, float, bool]] = []
-    hits = 0
-    for _ in range(n):
-        x = rng.uniform(a, b)
-        y = rng.uniform(0.0, ymax)
-        inside = y <= f(x)
-        if inside:
-            hits += 1
-        points.append((x, y, inside))
-    value = (b - a) * ymax * hits / n
-    return Estimate("integral", hits, n, value, reference), points
+ax[1, 1].plot(curve, lw=1, label="估计值")
+ax[1, 1].axhline(np.pi, ls="--", c="gray", label="π 真值")
+ax[1, 1].set_ylim(2.8, 3.5)
+ax[1, 1].legend(fontsize=8)
+ax[1, 1].set_title("⑤ 估计值逐渐收敛")
 
+ax[1, 2].axis("off")
+ax[1, 2].text(0.05, 0.6, f"π        ≈ {pi_hat:.5f}   真值 3.14159\n"
+                          f"心形面积  ≈ {heart_area:.5f}\n"
+                          f"定积分    ≈ {integral:.5f}   真值 π/4\n"
+                          f"投点数 N  = {N}", fontsize=10)
 
-def grid_reference(
-    predicate: Callable[[float, float], bool],
-    box: tuple[float, float, float, float],
-    steps: int = 600,
-) -> float:
-    """确定性细网格求面积，给蒙特卡罗结果一个独立的参照值。"""
-    xmin, xmax, ymin, ymax = box
-    dx = (xmax - xmin) / steps
-    dy = (ymax - ymin) / steps
-    hits = 0
-    for i in range(steps):
-        x = xmin + (i + 0.5) * dx
-        for j in range(steps):
-            y = ymin + (j + 0.5) * dy
-            if predicate(x, y):
-                hits += 1
-    return (xmax - xmin) * (ymax - ymin) * hits / (steps * steps)
+for a in (ax[0, 0], ax[0, 1], ax[0, 2], ax[1, 0]):
+    a.set_aspect("equal")
 
-
-def convergence_pi(seed: int, sizes: list[int]) -> list[tuple[int, float]]:
-    """同一串随机点，记录不同样本量下的 |π_hat - π|，用于画收敛曲线。"""
-    rng = random.Random(seed)
-    sizes = sorted(sizes)
-    result: list[tuple[int, float]] = []
-    hits = 0
-    index = 0
-    for n in range(1, sizes[-1] + 1):
-        x, y = rng.random(), rng.random()
-        if x * x + y * y <= 1.0:
-            hits += 1
-        if index < len(sizes) and n == sizes[index]:
-            result.append((n, abs(4.0 * hits / n - math.pi)))
-            index += 1
-    return result
-
-
-def sierpinski(rng: random.Random, n: int,
-               skip: int = 20) -> Iterator[tuple[float, float]]:
-    """混沌游戏：每步随机选一个顶点，走到与它连线的中点。
-
-    这是随机迭代（不是投点），但同样属于蒙特卡罗式的随机采样，
-    点集几乎必然收敛到 Sierpinski 三角形。
-    """
-    vertices = ((0.0, 0.0), (1.0, 0.0), (0.5, math.sqrt(3) / 2))
-    x, y = 0.5, 0.25
-    for i in range(n + skip):
-        vx, vy = rng.choice(vertices)
-        x, y = (x + vx) / 2, (y + vy) / 2
-        if i >= skip:
-            yield x, y
-
-
-if __name__ == "__main__":
-    # 这是「工具模块」：被 draw_all.py / selftest.py 导入使用。
-    # 单独运行时做一个最小演示，顺便说明该运行哪个文件。
-    demo = estimate_pi(random.Random(20261116), 20000)
-    print("montecarlo.py 是工具模块（随机采样与估算算法），不会自己输出作业结果。")
-    print(f"演示：{demo.row()}")
-    print("可用函数：estimate_pi / area_experiment / integral_experiment / "
-          "grid_reference / convergence_pi / sierpinski")
-    print("完整 5 个实验请运行：python draw_all.py；校验请运行：python selftest.py")
+plt.tight_layout()
+plt.show()

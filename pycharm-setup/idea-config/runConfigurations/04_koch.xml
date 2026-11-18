@@ -1,17 +1,20 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="02 montecarlo | 生成图形" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="false">
-    <module name="python-name-main-homework" />
+  <configuration default="false" name="04 koch | 运行即显示 0~4 阶" type="PythonConfigurationType" factoryName="Python">
+    <module name="pycharm" />
+    <option name="ENV_FILES" value="" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
       <env name="PYTHONUNBUFFERED" value="1" />
     </envs>
-    <option name="SDK_HOME" value="" />
-    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/montecarlo-shapes" />
-    <option name="IS_MODULE_SDK" value="true" />
+    <option name="SDK_HOME" value="D:\pycharm\venv\Scripts\python.exe" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/koch-snowflake" />
+    <option name="IS_MODULE_SDK" value="false" />
     <option name="ADD_CONTENT_ROOTS" value="true" />
     <option name="ADD_SOURCE_ROOTS" value="true" />
-    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/montecarlo-shapes/draw_all.py" />
+    <option name="DEBUG_JUST_MY_CODE" value="true" />
+    <option name="RUN_TOOL" value="" />
+    <option name="SCRIPT_NAME" value="$PROJECT_DIR$/koch-snowflake/koch.py" />
     <option name="PARAMETERS" value="" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="false" />
