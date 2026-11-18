@@ -9,7 +9,7 @@
 | --- | --- |
 | `sync_from_pycharm.py` | 把本机 `D:\pycharm` 里四份作业的改动同步到本仓库对应子目录 |
 | `idea-config/modules.xml` | PyCharm 的模块清单，记录项目由哪个 `.iml` 描述 |
-| `idea-config/runConfigurations/*.xml` | 8 个「一键运行」按钮的配置（运行哪个脚本、工作目录、解释器） |
+| `idea-config/runConfigurations/*.xml` | 9 个「一键运行」按钮的配置（运行哪个脚本、工作目录、解释器） |
 | `python-name-main-homework.iml` | PyCharm 模块定义：把四个作业目录设为源码根、排除虚拟环境 |
 
 `.idea/` 是 PyCharm 自己的配置目录，正常应放在项目根目录。为了不让工程文件混在作业里，这里把可共享的那份配置改名为 `idea-config/` 收进本文件夹；本机实际使用的 `.idea/` 和 `.iml` 仍留在仓库根目录，由 `.gitignore` 排除，不会上传到 GitHub。
@@ -18,8 +18,10 @@
 
 1. clone 本仓库，用 **File → Open** 选仓库根目录。
 2. 把 `idea-config/` 复制成根目录的 `.idea/`，把 `python-name-main-homework.iml` 复制到根目录。
-3. 解释器选本机 Python（作业只用标准库，Python 3.8+ 即可，不需要 `pip install`）。
-4. 右上角运行配置下拉里会出现 8 个配置，选一个点 ▶ 即可运行。
+3. 解释器选本机 Python 3.8+：四份作业的主实现只用标准库，**不需要 `pip install`**。
+   如果要跑蒙特卡罗的 numpy 对照版，再在 PyCharm 的 Terminal 里执行
+   `pip install -r montecarlo-shapes/requirements.txt`（安装 numpy 与 matplotlib）。
+4. 右上角运行配置下拉里会出现 9 个配置，选一个点 ▶ 即可运行。
 
 | 运行配置 | 作用 |
 | --- | --- |
@@ -27,6 +29,7 @@
 | `02 montecarlo \| 生成图形` | 生成 5 张 PNG 和 `output/index.html` 图片画廊 |
 | `02 montecarlo \| 生成图形并看图` | 同上，并自动用浏览器打开画廊（等价于 `python draw_all.py --show`） |
 | `02 montecarlo \| 自检` | 校验 PNG 结构、统计结果与图片画廊 |
+| `02 montecarlo \| numpy + matplotlib 版` | 可选对照版：生成 `output/numpy/` 下 5 张图并打开画廊，**需先装 requirements.txt** |
 | `03 character-grid \| n=4 示例` | 画 4×4 田字格并生成示例文本 |
 | `03 character-grid \| 自检` | 校验行数、列数、边框位置 |
 | `04 koch-snowflake \| 生成 0~4 阶并看图` | 生成 5 个阶数的雪花 PNG 并打开画廊 |
@@ -34,7 +37,9 @@
 
 > 运行配置里的解释器路径是本机专用的，换电脑后按第 3 步重新选一次即可。
 >
-> 蒙特卡罗和科赫雪花作业的控制台**只打印文字**，图片是 `output/*.png` 文件：在 PyCharm 项目树里双击 PNG 即可预览，或双击 `output/index.html` 一次看齐全部图片。
+> 蒙特卡罗和科赫雪花作业的控制台**只打印文字**，图片是 `output/*.png` 文件：在 PyCharm 项目树里双击 PNG 即可预览，或双击 `output/index.html` 一次看齐全部图片；numpy 对照版的图在 `output/numpy/index.html`。
+>
+> 装完第三方包后，PyCharm 的 **Settings → Python Interpreter** 软件包列表若没立即显示，点一下刷新或重新打开项目即可。
 
 ## 改完代码怎么上传
 

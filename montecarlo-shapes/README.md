@@ -1,6 +1,8 @@
 # 蒙特卡罗方法手搓图形
 
-> Python 作业 · 零第三方依赖（只用标准库）· Python 3.9+ · 固定随机种子，结果可复现
+> Python 作业 · 主实现零第三方依赖（只用标准库）· Python 3.9+ · 固定随机种子，结果可复现
+>
+> 另附一个**可选的 numpy + matplotlib 对照版**，见第九节；只有它需要 `pip install -r requirements.txt`。
 
 **成果速览**（下面 5 张图均由本作业代码生成，点开可看大图）：
 
@@ -20,7 +22,7 @@ python draw_all.py --show   # 生成后自动用浏览器打开画廊，直接�
 python selftest.py          # 自检：估算精度 + PNG 结构 + 画廊
 ```
 
-不需要 `pip install` 任何东西。
+**主实现不需要 `pip install` 任何东西**；只有第九节那个可选的 numpy 对照版需要安装依赖。
 
 > **该运行哪个？** 只有 `draw_all.py`（出图 + 统计表）和 `selftest.py`（自检）能直接运行。
 > `mc_canvas.py`、`montecarlo.py` 是**被导入的工具模块**，里面只有 `def` / `class` 定义，没有主程序；单独点运行不会生成任何图片、控制台也不会有结果（现在会打印一句说明告诉你该运行哪个）。详见第七节。
@@ -133,6 +135,9 @@ python selftest.py          # 自检：估算精度 + PNG 结构 + 画廊
 | `mc_canvas.py` | 点阵画布、Bresenham 直线、5×7 点阵字体、手写 PNG 编码器 | 否，被导入用 |
 | `output/*.png` | 生成的 5 张图（520×520），已随仓库提交，可直接查看 | — |
 | `output/index.html` | 图片画廊：5 张图内嵌在一个 HTML 里，双击即可看图 | — |
+| `montecarlo_numpy.py` | **可选对照版入口**：numpy 向量化 + matplotlib 出图（见第九节） | 是，需先装依赖 |
+| `requirements.txt` | 可选对照版的依赖清单（numpy、matplotlib） | — |
+| `output/numpy/` | 对照版生成的 5 张 PNG + `index.html` 画廊，不覆盖手搓版图片 | — |
 | `.gitignore` | Git 忽略清单（排除 `__pycache__` 等缓存） | — |
 
 **为什么拆成 4 个 `.py`？** 一层只管一件事：改配色不用碰算法，改算法不用碰画图，这也是 Python 项目最常见的模块分工。调用关系如下：
@@ -151,3 +156,50 @@ selftest.py        ← 运行它（检查上面两层 + 5 张图）
 ## 八、结论
 
 蒙特卡罗方法把「求面积 / 积分 / 常数」换成「数随机点」，不需要知道图形的解析表达式，只要能判断「点在不在里面」就行——所以心形这种隐函数图形也能直接处理。代价是收敛慢（`1/√N`）。本作业全程只用标准库，从随机数、点阵光栅化到 PNG 文件编码都自己实现，可以直接运行、复现和交作业。
+
+## 九、附：numpy + matplotlib 对照版（可选）
+
+上面八节是**零依赖手搓版**，也就是本作业的主答案。课程里如果讲到 `numpy` 数组运算和 `matplotlib` 画图，可以用本节这一版对照：题目、五个实验、随机种子完全相同，只是把「自己写循环、自己编码 PNG」换成「数组向量化 + 绘图库」，正好能看出库替我们做了哪些事。
+
+**这一版是可选的，不装依赖也能正常跑完主作业。** 它单独放在一个文件 `montecarlo_numpy.py` 里，不会改动 `draw_all.py` 的任何逻辑。
+
+### 环境配置与运行
+
+```bash
+pip install -r requirements.txt        # 安装 numpy 与 matplotlib
+python montecarlo_numpy.py            # 生成 5 张图 + 画廊，打印统计表
+python montecarlo_numpy.py --show     # 生成后自动打开浏览器看图
+```
+
+本机 PyCharm 项目已配置好：解释器 `D:\pycharm\venv\Scripts\python.exe`（Python 3.13.0）里已安装 **numpy 2.5.5 / matplotlib 3.11.2**（以及 matplotlib 的 9 个依赖包）。在 PyCharm 右上角下拉选 **`02 montecarlo | numpy + matplotlib 版`** 点 ▶ 即可，Settings → Python Interpreter 里能看到这些包。
+
+图片输出到 `output/numpy/`，**不覆盖**手搓版的 `output/*.png`；双击 `output/numpy/index.html` 一次看齐 5 张图。控制台依旧只打印文字，不会把图片画在终端里。
+
+| 投点估 π | 随机点心形 | Sierpinski | 蒙特卡罗积分 | 误差收敛 |
+| --- | --- | --- | --- | --- |
+| ![](output/numpy/01_pi_darts.png) | ![](output/numpy/02_heart.png) | ![](output/numpy/03_sierpinski.png) | ![](output/numpy/04_integral.png) | ![](output/numpy/05_convergence.png) |
+
+### 两版写法对照
+
+| 环节 | 手搓版 `draw_all.py` | 对照版 `montecarlo_numpy.py` |
+| --- | --- | --- |
+| 随机数 | `random.Random(seed)` + Python 循环逐个生成 | `np.random.default_rng(seed)` 一次生成整个数组 |
+| 命中判定 | 逐点调用 Python 函数 | 数组运算 + 布尔掩码，无 Python 循环 |
+| 画图 | 自己写像素、Bresenham 直线、5×7 点阵字体 | `ax.scatter` / `ax.loglog` / `Circle` |
+| 输出图片 | 手写 PNG 编码器（`zlib` + `struct` + CRC32） | `fig.savefig()` |
+| 第三方依赖 | 无 | numpy、matplotlib |
+| 教学价值 | 看清底层每一步怎么实现 | 看清实际工程里怎么写得更短、更快 |
+
+对照版里 `matplotlib.use("Agg")` 是为了在没有图形界面/后台运行时也能保存图片；标题用英文是避免 matplotlib 缺少中文字体时显示成方块。它自己带断言式自检（估算误差、5 张图、画廊），运行结束会打印 `ALL CHECKS PASSED (numpy + matplotlib 版)`。
+
+### 对照版实测结果
+
+`SEED = 20261116`，`python montecarlo_numpy.py`（numpy 2.5.5 / matplotlib 3.11.2）：
+
+| 实验 | 命中 / 总数 | 估计值 | 参考值 | 绝对误差 |
+| --- | --- | --- | --- | --- |
+| π（投点） | 15713 / 20000 | 3.14260 | 3.14159 | 0.00101 |
+| 心形面积 | 32545 / 60000 | 3.66674 | 3.66178 | 0.00496 |
+| 定积分 π/4 | 31379 / 40000 | 0.78448 | 0.78540 | 0.00092 |
+
+和手搓版的数值略有不同是正常的：两版用不同的随机数生成器（`random.Random` vs `default_rng`），但采样口径、样本量、参考值完全一致，误差都在 `1/√N` 的统计预期内；心形参考面积两版都是 `3.66178`（同样取 600×600 格子中心的细网格）。
