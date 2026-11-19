@@ -9,6 +9,7 @@
       <sourceFolder url="file://$MODULE_DIR$/word-frequency" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/lonely-poem" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/exp2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/exp3" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
     </content>
     <orderEntry type="inheritedJdk" />

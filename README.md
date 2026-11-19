@@ -1,6 +1,6 @@
 # Python 作业合集
 
-Python 课程作业与实验。6 份编程作业都是**一个 `.py` + 一个短 README**，代码简短、运行就出结果；实验 2 是单独的网页数据看板。
+Python 课程作业与实验。6 份编程作业都是**一个 `.py` + 一个短 README**，代码简短、运行就出结果；实验 2 是网页数据看板，实验 3 是列表／元组／集合实验（含实验报告与运行截图）。
 
 ## 作业索引（6 份）
 
@@ -17,16 +17,17 @@ Python 课程作业与实验。6 份编程作业都是**一个 `.py` + 一个短
 
 | 实验 | 文件夹 | 内容 | 运行（进入该文件夹后） |
 | --- | --- | --- | --- |
-| 实验 2 | [`exp2/`](exp2/README.md) | 数据看板的设计与实现（仅基础部分）：Streamlit + Pandas + Plotly 静态看板 | `streamlit run app.py`，浏览器打开 http://localhost:8501 |
+| 实验 2 | [`exp2/`](exp2/README.md) | 数据看板的设计与实现（仅基础部分）：Streamlit + Pandas + Plotly 静态看板 | `streamlit run app.py`，服务就绪后自动打开 http://localhost:8501 |
+| 实验 3 | [`exp3/`](exp3/README.md) | Python 列表、元组、集合：切片删除预判、可哈希辨析、集合运算、保序去重、选课综合设计 | `python list_tuple_set.py`（138 行，控制台一次输出 5 个任务 + 拓展） |
 
-> `exp2/` 是课程实验，与上面 6 份编程作业分开，目录按要求单独命名；内含 `app.py`、`data.csv`、`dashboard.png` 和实验说明。
+> `exp2/`、`exp3/` 是课程实验，与上面 6 份编程作业分开，目录按要求单独命名；各自的实验报告、成品／运行截图都在目录里。
 
 ## 环境与依赖
 
 - Python 3.13（本机 PyCharm 用 `D:\pycharm\venv`，Python 3.13.0）。
-- 作业 1、3、6 只用标准库，不用装包；作业 2、4 需要 `pip install numpy matplotlib`（作业 4 只需 matplotlib）；作业 5 需要 `pip install jieba`。
+- 作业 1、3、6 与**实验 3 只用标准库**，不用装包；作业 2、4 需要 `pip install numpy matplotlib`（作业 4 只需 matplotlib）；作业 5 需要 `pip install jieba`。
 - **实验 2 需要 `pip install streamlit pandas plotly`**；本机 venv 已装好 streamlit 1.67.0 / pandas 3.1.1 / plotly 7.1.0。
-- 作业 2、4 **运行即弹出图形窗口**，不用去点图片文件；作业 5、6 直接在控制台打印结果；实验 2 启动本地网页看板。
+- 作业 2、4 **运行即弹出图形窗口**，不用去点图片文件；作业 5、6 与实验 3 直接在控制台打印结果；实验 2 启动本地网页看板。
 - 作业 5 的 `report.txt` 是报告全文语料，可直接换成老师指定的文本。
 - 随机实验固定种子，几何实验完全确定，结果均可复现。
 
@@ -42,6 +43,7 @@ python-name-main-homework/
 ├── word-frequency/      ← 作业 5：wordfreq.py + report.txt + README.md
 ├── lonely-poem/         ← 作业 6：lonely_poem.py + README.md
 ├── exp2/                ← 实验 2：app.py + data.csv + dashboard.png + README.md
+├── exp3/                ← 实验 3：list_tuple_set.py + run_output.png + README.md
 ├── pycharm-setup/       ← 非作业内容：本机 PyCharm 配置与同步脚本
 └── .gitignore          ← Git 忽略清单
 ```
