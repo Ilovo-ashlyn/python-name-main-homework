@@ -18,7 +18,7 @@ from pathlib import Path
 # 本脚本位于 pycharm-setup/ 下，仓库根目录是它的上一级目录
 REPO = Path(__file__).resolve().parent.parent
 HOMEWORKS = ("name-main", "montecarlo-shapes", "character-grid",
-             "koch-snowflake", "word-frequency", "lonely-poem", "exp1", "exp2", "exp3")
+             "koch-snowflake", "word-frequency", "lonely-poem", "exp1", "exp2", "exp3", "exp4")
 SKIP = {"__pycache__", ".git", ".idea", "venv", ".venv", ".pytest_cache"}
 
 
