@@ -20,7 +20,7 @@ Python 课程作业与实验。6 份编程作业都是**一个 `.py` + 一个短
 | 实验 1 | [`exp1/`](exp1/README.md) | Python Vibe Coding 实操考核：Excel 报表清洗统计（四 sheet）+ FastAPI 记账接口；含 pytest 测试、运行截图与 AI 协作记录 | `python excel_report.py`；`uvicorn ledger_api:app`；`pytest -q` |
 | 实验 2 | [`exp2/`](exp2/README.md) | 数据看板的设计与实现（仅基础部分）：Streamlit + Pandas + Plotly 静态看板 | `streamlit run app.py`，服务就绪后自动打开 http://localhost:8501 |
 | 实验 3 | [`exp3/`](exp3/README.md) | Python 列表、元组、集合：切片删除预判、可哈希辨析、集合运算、保序去重、选课综合设计 | `python list_tuple_set.py`（138 行，控制台一次输出 5 个任务 + 拓展） |
-| 实验 4 | [`exp4/`](exp4/README.md) | 本地文档智能审查与摘要（第一版）：批量读取 txt/md、jieba 分词、停用词过滤、Top 50 词频统计、中文词云与关键词报告 | `python analyze.py`（弹出词云窗口，在 `output/` 生成 PNG 与报告） |
+| 实验 4 | [`exp4/`](exp4/README.md) | 本地文档智能审查与摘要：批量读取 txt/md、jieba 分词、停用词过滤、Top 50 词频统计、中文词云、关键词报告（TXT + 两份 CSV） | `python analyze.py`（弹出词云窗口，在 `output/` 生成 PNG、TXT 报告与 CSV） |
 
 > `exp1/`～`exp4/` 是课程实验，与上面 6 份编程作业分开，目录按实验号单独命名；各自的实验报告、成品／运行截图都在目录里。实验 1 按考核要求是多文件工程（含 `requirements.txt`、`tests/`、`ai_logs/`），实验 4 因题目指定依赖也单列 `requirements.txt`，与前面「单文件」的编程作业不同。
 
