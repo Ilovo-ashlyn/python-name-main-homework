@@ -1,11 +1,9 @@
-"""实验 4：本地文档智能审查与摘要（第二版）。
+"""实验 4：本地文档智能审查与摘要。
 
 在 PyCharm 里右键运行本文件即可：
   遍历 docs/ 下的 .txt / .md -> jieba 精确模式分词 -> 过滤 -> 统计词频
   -> output/ 里生成词云 PNG、关键词报告（TXT + CSV）、Top50 词频 CSV
   -> 弹窗展示词云。
-
-只做基础功能：不接大模型 API、不做 watchdog 文件夹监控、不做蒙特卡洛模拟。
 """
 from __future__ import annotations
 
@@ -17,7 +15,7 @@ import jieba
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 
-# ---- 路径与常量：都相对本文件定位，换到任何目录运行都不会找不到文件 ----
+# ---- 路径与常量：相对本文件定位 ----
 ROOT = Path(__file__).resolve().parent
 DOCS = ROOT / "docs"
 OUT = ROOT / "output"
@@ -65,8 +63,7 @@ def cut_words(text: str, stopwords: set[str]) -> list[str]:
 def collect_words(files: list[Path], stopwords: set[str]):
     """逐篇读文档、分词、统计，返回 (全库词列表, 每篇 Top10, 未参与统计的文件)。
 
-    单个文件读取失败只记一笔 (文件名, 原因) 就继续处理后面的文件，
-    绝不因为一个坏文件让整批任务中断。
+    单个文件读取失败只记一笔 (文件名, 原因)，然后继续处理后面的文件。
     """
     all_words: list[str] = []
     per_file: dict[str, list[tuple[str, int]]] = {}
@@ -126,8 +123,7 @@ def write_report(top50: list[tuple[str, int]],
 def draw_wordcloud(top50: list[tuple[str, int]]) -> Path:
     """生成词云、保存 PNG，再弹窗展示。
 
-    顺序很重要：先 to_file 落盘，再 plt.show()。plt.show() 会阻塞到关闭窗口，
-    所以窗口还开着时 output/ 里也必须已经有图。
+    先 to_file 落盘再 plt.show()，窗口没关时 output/ 里也已经有图。
     """
     wc = WordCloud(
         font_path=FONT,
@@ -182,10 +178,9 @@ def main() -> int:
     for name, reason in failed:
         print(f"[错误] {name}：{reason}，已跳过并继续处理其他文件")
 
-    # 5. 全部文件都没提出有效词：给明确提示，不生成任何输出，正常退出
+    # 5. 全部文件都没提出有效词：打印提示，不生成输出，正常退出
     if not all_words:
         print("[提示] 所有文件都没有提取到有效词，本次不生成词云和报告")
-        print("       请检查文档内容，或看看停用词表是否把词全过滤掉了")
         return 0
 
     # 6. 统计全库 Top50，输出目录这时才建，避免上面那种情况留下空文件
@@ -204,7 +199,7 @@ def main() -> int:
     # 7. 词云：先写 PNG，再弹窗
     png = draw_wordcloud(top50)
 
-    # 8. 汇总：让用户一眼看到这轮生成了什么、跳过了几个文件
+    # 8. 打印本次结果摘要
     print(f"已处理 {len(per_file)} 篇文档、{len(all_words)} 个有效词"
           f"，跳过 {len(failed)} 个文件")
     print("output/ 已生成：document_wordcloud.png、keywords_report.txt、"
